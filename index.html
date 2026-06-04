@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Learn Arabic Hub</title>
+
+<meta name="description" content="Learn Arabic through lessons, stories and conversations.">
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+
+<h1>Learn Arabic Hub</h1>
+
+<p>Learn Arabic Through Real Lessons</p>
+
+</header>
+
+<section class="search-box">
+
+<input
+type="text"
+id="searchInput"
+placeholder="Search lessons...">
+
+</section>
+
+<section class="categories">
+
+<button onclick="filterLessons('All')">All</button>
+
+<button onclick="filterLessons('Beginner Arabic')">
+Beginner Arabic
+</button>
+
+<button onclick="filterLessons('Daily Arabic')">
+Daily Arabic
+</button>
+
+<button onclick="filterLessons('Arabic Stories')">
+Arabic Stories
+</button>
+
+<button onclick="filterLessons('Arabic Conversations')">
+Arabic Conversations
+</button>
+
+</section>
+
+<div id="lessonContainer"></div>
+
+<script src="data.js"></script>
+<script src="main.js"></script>
+
+</body>
+</html>
