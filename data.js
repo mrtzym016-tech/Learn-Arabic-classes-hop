@@ -5,10 +5,10 @@ title:"learn Arabic/daily Routine",
 category:"Beginner Arabic",
 
 video:
-"https://youtu.be/TFa3Hi9I-Tw?si=xTMtSca8UxOwS8fT",
+"‏https://youtu.be/TFa3Hi9I-Tw?si=xTMtSca8UxOwS8fT",
 
 pdf:
-"https://upfiles.com/l0e4a8h",
+"‏https://upfiles.com/l0e4a8h",
 
 quiz:
 null
