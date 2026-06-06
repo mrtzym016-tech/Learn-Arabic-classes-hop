@@ -184,3 +184,24 @@ border-radius:6px;
 #completeBtn.done{
 background:#00ff88;
 }
+.adBox{
+margin:15px auto;
+text-align:center;
+}
+
+.adBox.small{
+transform:scale(0.95);
+}
+
+.floatingAd{
+position:fixed;
+right:10px;
+bottom:10px;
+z-index:999;
+}
+
+@media(max-width:768px){
+.floatingAd{
+display:none;
+}
+}
