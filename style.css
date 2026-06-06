@@ -184,10 +184,3 @@ border-radius:6px;
 #completeBtn.done{
 background:#00ff88;
 }
-.ad-slot{
-display:flex;
-justify-content:center;
-align-items:center;
-margin:15px 0;
-overflow:hidden;
-}
