@@ -1,6 +1,77 @@
 let currentCategory = "All";
 let currentVideo = null;
 
+/* =========================
+DATA SYSTEM (LOCAL STORAGE)
+========================= */
+
+function getLessons(){
+return JSON.parse(localStorage.getItem("lessons")) || lessons;
+}
+
+function saveLessons(data){
+localStorage.setItem("lessons", JSON.stringify(data));
+}
+
+/* =========================
+THUMBNAIL
+========================= */
+
+function getThumbnail(url){
+
+if(url.includes("youtube")){
+let id = url.split("/embed/")[1];
+return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+}
+
+return "https://via.placeholder.com/300x180";
+
+}
+
+/* =========================
+ADD LESSON
+========================= */
+
+function openAddModal(){
+document.getElementById("addModal").style.display = "flex";
+}
+
+function closeAddModal(){
+document.getElementById("addModal").style.display = "none";
+}
+
+function addLesson(){
+
+const title = document.getElementById("titleInput").value;
+const video = document.getElementById("videoInput").value;
+const pdf = document.getElementById("pdfInput").value;
+const thumb = document.getElementById("thumbInput").value;
+
+if(!title || !video){
+alert("Fill required fields");
+return;
+}
+
+const data = getLessons();
+
+data.push({
+title,
+category: currentCategory === "All" ? "Custom" : currentCategory,
+video,
+pdf: pdf || "#",
+thumb: thumb || null
+});
+
+saveLessons(data);
+
+closeAddModal();
+renderLessons();
+}
+
+/* =========================
+PROGRESS
+========================= */
+
 function getCompleted(){
 return JSON.parse(localStorage.getItem("completed") || "[]");
 }
@@ -9,46 +80,38 @@ function saveCompleted(data){
 localStorage.setItem("completed", JSON.stringify(data));
 }
 
-function getThumbnail(videoUrl){
-const id = videoUrl.split("/embed/")[1];
-return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
-}
-
-/* =======================
-PROGRESS SYSTEM
-======================= */
-
 function updateProgress(){
 
 const completed = getCompleted();
-const total = lessons.length;
-
-const percent = (completed.length / total) * 100;
+const data = getLessons();
 
 document.getElementById("progressText").innerText =
-`Completed: ${completed.length} / ${total}`;
+`Completed: ${completed.length} / ${data.length}`;
 
 document.getElementById("progressFill").style.width =
-percent + "%";
+(completed.length / data.length) * 100 + "%";
 
-if(completed.length === total && total > 0){
-document.getElementById("completeMessage").innerHTML =
-"🎉 Congratulations! You completed the course!";
-}else{
-document.getElementById("completeMessage").innerHTML = "";
+if(completed.length === data.length && data.length > 0){
+document.getElementById("completeMessage").innerText =
+"🎉 Course Completed!";
+}
 }
 
-}
-
-function resetProgress(){
-localStorage.removeItem("completed");
-renderLessons();
-updateProgress();
-}
-
-/* =======================
+/* =========================
 VIDEO SYSTEM
-======================= */
+========================= */
+
+function openVideo(url){
+currentVideo = url;
+document.getElementById("videoFrame").src = url;
+document.getElementById("videoModal").style.display = "flex";
+updateCompleteBtn();
+}
+
+function closeVideo(){
+document.getElementById("videoModal").style.display = "none";
+document.getElementById("videoFrame").src = "";
+}
 
 function toggleComplete(){
 
@@ -72,37 +135,14 @@ function updateCompleteBtn(){
 const completed = getCompleted();
 const btn = document.getElementById("completeBtn");
 
-if(completed.includes(currentVideo)){
-btn.innerText = "✓ Completed";
-btn.classList.add("done");
-}else{
-btn.innerText = "Mark as Completed";
-btn.classList.remove("done");
+btn.innerText = completed.includes(currentVideo)
+? "✓ Completed"
+: "Mark as Completed";
 }
 
-}
-
-function openVideo(url){
-
-currentVideo = url;
-
-document.getElementById("videoFrame").src = url;
-document.getElementById("videoModal").style.display = "flex";
-
-updateCompleteBtn();
-
-}
-
-function closeVideo(){
-
-document.getElementById("videoModal").style.display = "none";
-document.getElementById("videoFrame").src = "";
-
-}
-
-/* =======================
-LESSONS RENDER
-======================= */
+/* =========================
+RENDER
+========================= */
 
 function renderLessons(){
 
@@ -110,16 +150,15 @@ const container = document.getElementById("lessonContainer");
 
 const search = document.getElementById("searchInput").value.toLowerCase();
 
+const data = getLessons();
 const completed = getCompleted();
 
 container.innerHTML = "";
 
-lessons
-.filter(item =>
+data.filter(item =>
 (currentCategory === "All" || item.category === currentCategory)
 && item.title.toLowerCase().includes(search)
 )
-
 .forEach(item => {
 
 const isDone = completed.includes(item.video);
@@ -127,20 +166,16 @@ const isDone = completed.includes(item.video);
 container.innerHTML += `
 <div class="card ${isDone ? "doneCard" : ""}">
 
-<img
-class="thumbnail"
-src="${getThumbnail(item.video)}"
-onclick="openVideo('${item.video}')"
-/>
+<img class="thumbnail"
+src="${item.thumb || getThumbnail(item.video)}"
+onclick="openVideo('${item.video}')">
 
 <h3>${item.title}</h3>
 <p>${item.category}</p>
 
-<button onclick="openVideo('${item.video}')">
-▶ Watch Lesson
-</button>
+<button onclick="openVideo('${item.video}')">▶ Watch</button>
 
-<a href="${item.pdf}" target="_blank">📄 Download PDF</a>
+<a href="${item.pdf}" target="_blank">📄 PDF</a>
 
 </div>
 `;
@@ -151,14 +186,18 @@ updateProgress();
 
 }
 
-/* =======================
-FILTER + INIT
-======================= */
+/* =========================
+FILTER
+========================= */
 
 function filterLessons(cat){
 currentCategory = cat;
 renderLessons();
 }
+
+/* =========================
+INIT
+========================= */
 
 document.getElementById("searchInput")
 .addEventListener("input", renderLessons);
