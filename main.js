@@ -2,6 +2,43 @@ let currentCategory = "All";
 let currentVideo = null;
 
 function getCompleted(){
+function updateProgress(){
+
+const completed =
+getCompleted().length;
+
+const total =
+lessons.length;
+
+const percent =
+Math.round((completed/total)*100);
+
+document.getElementById(
+"progressFill"
+).style.width = percent + "%";
+
+document.getElementById(
+"progressText"
+).innerText =
+`${completed} / ${total} Lessons Completed (${percent}%)`;
+
+if(completed === total && total > 0){
+
+document.getElementById(
+"certificateMessage"
+).innerHTML = `
+<h3>🎉 Congratulations!</h3>
+<p>You completed the Arabic Course.</p>
+`;
+
+}else{
+
+document.getElementById(
+"certificateMessage"
+).innerHTML = "";
+
+}
+
 return JSON.parse(localStorage.getItem("completed") || "[]");
 }
 
