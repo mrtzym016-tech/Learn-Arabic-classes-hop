@@ -1,10 +1,57 @@
 let currentCategory = "All";
+let currentVideo = null;
+
+function getCompleted(){
+return JSON.parse(localStorage.getItem("completed") || "[]");
+}
+
+function toggleComplete(){
+let completed = getCompleted();
+
+if(completed.includes(currentVideo)){
+completed = completed.filter(v => v !== currentVideo);
+} else {
+completed.push(currentVideo);
+}
+
+localStorage.setItem("completed", JSON.stringify(completed));
+renderLessons();
+updateCompleteBtn();
+}
+
+function updateCompleteBtn(){
+const completed = getCompleted();
+const btn = document.getElementById("completeBtn");
+
+if(completed.includes(currentVideo)){
+btn.innerText = "✓ Completed";
+btn.classList.add("done");
+} else {
+btn.innerText = "Mark as Completed";
+btn.classList.remove("done");
+}
+}
+
+function openVideo(url){
+currentVideo = url;
+
+document.getElementById("videoFrame").src = url;
+document.getElementById("videoModal").style.display = "flex";
+
+updateCompleteBtn();
+}
+
+function closeVideo(){
+document.getElementById("videoModal").style.display = "none";
+document.getElementById("videoFrame").src = "";
+}
 
 function renderLessons(){
 
 const container = document.getElementById("lessonContainer");
-
 const search = document.getElementById("searchInput").value.toLowerCase();
+
+const completed = getCompleted();
 
 container.innerHTML = "";
 
@@ -16,16 +63,17 @@ lessons
 
 .forEach(item => {
 
+const isDone = completed.includes(item.video);
+
 container.innerHTML += `
-<div class="card">
+<div class="card ${isDone ? "doneCard" : ""}">
 
 <h3>${item.title}</h3>
 <p>${item.category}</p>
 
-<a href="${item.video}" target="_blank">▶ Watch Lesson</a>
-<a href="${item.pdf}" target="_blank">📄 Download PDF</a>
+<button onclick="openVideo('${item.video}')">▶ Watch</button>
 
-${item.quiz ? `<a href="${item.quiz}" target="_blank">📝 Take Quiz</a>` : ""}
+<a href="${item.pdf}" target="_blank">📄 PDF</a>
 
 </div>
 `;
@@ -39,9 +87,7 @@ currentCategory = cat;
 renderLessons();
 }
 
-// 🔴 FIXED LINE (كان مكسور)
 document.getElementById("searchInput")
 .addEventListener("input", renderLessons);
 
-// أول تحميل
 renderLessons();
