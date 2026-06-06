@@ -11,6 +11,47 @@ padding:30px;
 background:#111;
 }
 
+/* PROGRESS */
+.progressBox{
+padding:15px;
+text-align:center;
+background:#151520;
+}
+
+.progressBar{
+width:90%;
+max-width:500px;
+height:10px;
+background:#333;
+margin:10px auto;
+border-radius:20px;
+overflow:hidden;
+}
+
+#progressFill{
+height:100%;
+width:0%;
+background:#00ff88;
+transition:0.3s;
+}
+
+.resetBtn{
+margin-top:10px;
+padding:8px 12px;
+background:#444;
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+#completeMessage{
+margin-top:10px;
+color:#00ff88;
+font-weight:bold;
+}
+
+/* SEARCH */
 .search-box{
 text-align:center;
 padding:15px;
@@ -24,6 +65,7 @@ border-radius:8px;
 border:none;
 }
 
+/* CATEGORIES */
 .categories{
 text-align:center;
 padding:10px;
@@ -39,6 +81,7 @@ border-radius:6px;
 cursor:pointer;
 }
 
+/* LESSONS */
 #lessonContainer{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
@@ -51,6 +94,7 @@ background:#1a1a22;
 padding:15px;
 border-radius:12px;
 transition:0.3s;
+overflow:hidden;
 }
 
 .card:hover{
@@ -75,6 +119,22 @@ color:#00bcd4;
 text-decoration:none;
 }
 
+/* THUMBNAIL */
+.thumbnail{
+width:100%;
+height:180px;
+object-fit:cover;
+border-radius:10px;
+cursor:pointer;
+margin-bottom:10px;
+transition:0.3s;
+}
+
+.thumbnail:hover{
+transform:scale(1.03);
+}
+
+/* DONE */
 .doneCard{
 border:2px solid #00ff88;
 }
@@ -123,25 +183,4 @@ border-radius:6px;
 
 #completeBtn.done{
 background:#00ff88;
-}
-.thumbnail{
-width:100%;
-height:180px;
-object-fit:cover;
-border-radius:10px;
-cursor:pointer;
-margin-bottom:10px;
-transition:0.3s;
-}
-
-.thumbnail:hover{
-transform:scale(1.03);
-}
-
-.card{
-overflow:hidden;
-}
-
-.doneCard{
-border:2px solid #00ff88;
 }
