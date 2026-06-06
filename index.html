@@ -15,23 +15,22 @@
 <h1>Learn Arabic Hub</h1>
 <p>Netflix Style Arabic Learning</p>
 </header>
-<section class="progress-section">
 
-<h2>Your Progress</h2>
-
-<div class="progress-bar">
-
-<div id="progressFill"></div>
-
+<!-- 🔥 PROGRESS DASHBOARD -->
+<section class="progressBox">
+<div class="progressText">
+<span id="progressText">Completed: 0 / 0</span>
 </div>
 
-<p id="progressText">
-0 / 0 Completed
-</p>
+<div class="progressBar">
+<div id="progressFill"></div>
+</div>
 
-<div id="certificateMessage"></div>
+<div id="completeMessage"></div>
 
+<button class="resetBtn" onclick="resetProgress()">Reset Progress</button>
 </section>
+
 <section class="search-box">
 <input type="text" id="searchInput" placeholder="Search lessons...">
 </section>
@@ -42,12 +41,10 @@
 <button onclick="filterLessons('Daily Arabic')">Daily</button>
 <button onclick="filterLessons('Arabic Conversations')">Conversations</button>
 </section>
-<h2 class="section-title">
-Arabic Lessons & Conversations
-</h2>
+
 <div id="lessonContainer"></div>
 
-<!-- 🔥 VIDEO MODAL -->
+<!-- VIDEO MODAL -->
 <div id="videoModal" class="modal">
 <div class="modal-content">
 
