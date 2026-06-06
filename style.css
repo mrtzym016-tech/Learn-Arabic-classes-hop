@@ -184,15 +184,3 @@ border-radius:6px;
 #completeBtn.done{
 background:#00ff88;
 }
-.adBox{
-text-align:center;
-margin:15px auto;
-}
-
-.modalAd{
-margin-bottom:10px;
-}
-
-.adBox iframe{
-max-width:100%;
-}
