@@ -6,53 +6,43 @@
 
 <title>Learn Arabic Hub</title>
 
-<meta name="description" content="Learn Arabic through lessons, stories and conversations.">
-
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <header>
-
 <h1>Learn Arabic Hub</h1>
-
-<p>Learn Arabic Through Real Lessons</p>
-
+<p>Netflix Style Arabic Learning</p>
 </header>
 
 <section class="search-box">
-
-<input
-type="text"
-id="searchInput"
-placeholder="Search lessons...">
-
+<input type="text" id="searchInput" placeholder="Search lessons...">
 </section>
 
 <section class="categories">
-
 <button onclick="filterLessons('All')">All</button>
-
-<button onclick="filterLessons('Beginner Arabic')">
-Beginner Arabic
-</button>
-
-<button onclick="filterLessons('Daily Arabic')">
-Daily Arabic
-</button>
-
-<button onclick="filterLessons('Arabic Stories')">
-Arabic Stories
-</button>
-
-<button onclick="filterLessons('Arabic Conversations')">
-Arabic Conversations
-</button>
-
+<button onclick="filterLessons('Beginner Arabic')">Beginner</button>
+<button onclick="filterLessons('Daily Arabic')">Daily</button>
+<button onclick="filterLessons('Arabic Conversations')">Conversations</button>
 </section>
 
 <div id="lessonContainer"></div>
+
+<!-- 🔥 VIDEO MODAL -->
+<div id="videoModal" class="modal">
+<div class="modal-content">
+
+<span class="close" onclick="closeVideo()">×</span>
+
+<iframe id="videoFrame" frameborder="0" allowfullscreen></iframe>
+
+<button id="completeBtn" onclick="toggleComplete()">
+Mark as Completed
+</button>
+
+</div>
+</div>
 
 <script src="data.js"></script>
 <script src="main.js"></script>
