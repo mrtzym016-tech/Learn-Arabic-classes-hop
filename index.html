@@ -51,6 +51,31 @@ atOptions = {
 <script src="https://www.highperformanceformat.com/982c56d4575c11c305684c514c771985/invoke.js"></script>
 </div>
 
+<!-- 🔥 ADD LESSON BUTTON -->
+<div style="text-align:center;">
+<button onclick="openAddModal()" class="resetBtn" style="background:#00ff88;color:black;font-weight:bold;">
++ Add New Lesson
+</button>
+</div>
+
+<!-- ADD MODAL -->
+<div id="addModal" class="modal">
+<div class="modal-content">
+
+<span class="close" onclick="closeAddModal()">×</span>
+
+<h2>Add Lesson</h2>
+
+<input id="titleInput" placeholder="Title">
+<input id="videoInput" placeholder="YouTube Embed URL">
+<input id="pdfInput" placeholder="PDF Link">
+<input id="thumbInput" placeholder="Thumbnail URL (optional)">
+
+<button onclick="addLesson()" class="resetBtn">Save</button>
+
+</div>
+</div>
+
 <section class="search-box">
 <input type="text" id="searchInput" placeholder="Search lessons...">
 </section>
