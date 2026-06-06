@@ -2,53 +2,53 @@ let currentCategory = "All";
 let currentVideo = null;
 
 function getCompleted(){
-function updateProgress(){
-
-const completed =
-getCompleted().length;
-
-const total =
-lessons.length;
-
-const percent =
-Math.round((completed/total)*100);
-
-document.getElementById(
-"progressFill"
-).style.width = percent + "%";
-
-document.getElementById(
-"progressText"
-).innerText =
-`${completed} / ${total} Lessons Completed (${percent}%)`;
-
-if(completed === total && total > 0){
-
-document.getElementById(
-"certificateMessage"
-).innerHTML = `
-<h3>🎉 Congratulations!</h3>
-<p>You completed the Arabic Course.</p>
-`;
-
-}else{
-
-document.getElementById(
-"certificateMessage"
-).innerHTML = "";
-
-}
-
 return JSON.parse(localStorage.getItem("completed") || "[]");
 }
 
+function saveCompleted(data){
+localStorage.setItem("completed", JSON.stringify(data));
+}
+
 function getThumbnail(videoUrl){
-
 const id = videoUrl.split("/embed/")[1];
-
 return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+}
+
+/* =======================
+PROGRESS SYSTEM
+======================= */
+
+function updateProgress(){
+
+const completed = getCompleted();
+const total = lessons.length;
+
+const percent = (completed.length / total) * 100;
+
+document.getElementById("progressText").innerText =
+`Completed: ${completed.length} / ${total}`;
+
+document.getElementById("progressFill").style.width =
+percent + "%";
+
+if(completed.length === total && total > 0){
+document.getElementById("completeMessage").innerHTML =
+"🎉 Congratulations! You completed the course!";
+}else{
+document.getElementById("completeMessage").innerHTML = "";
+}
 
 }
+
+function resetProgress(){
+localStorage.removeItem("completed");
+renderLessons();
+updateProgress();
+}
+
+/* =======================
+VIDEO SYSTEM
+======================= */
 
 function toggleComplete(){
 
@@ -60,35 +60,24 @@ completed = completed.filter(v => v !== currentVideo);
 completed.push(currentVideo);
 }
 
-localStorage.setItem(
-"completed",
-JSON.stringify(completed)
-);
+saveCompleted(completed);
 
 renderLessons();
 updateCompleteBtn();
-
+updateProgress();
 }
 
 function updateCompleteBtn(){
 
 const completed = getCompleted();
-
-const btn =
-document.getElementById("completeBtn");
+const btn = document.getElementById("completeBtn");
 
 if(completed.includes(currentVideo)){
-
 btn.innerText = "✓ Completed";
-
 btn.classList.add("done");
-
 }else{
-
 btn.innerText = "Mark as Completed";
-
 btn.classList.remove("done");
-
 }
 
 }
@@ -98,7 +87,6 @@ function openVideo(url){
 currentVideo = url;
 
 document.getElementById("videoFrame").src = url;
-
 document.getElementById("videoModal").style.display = "flex";
 
 updateCompleteBtn();
@@ -108,20 +96,19 @@ updateCompleteBtn();
 function closeVideo(){
 
 document.getElementById("videoModal").style.display = "none";
-
 document.getElementById("videoFrame").src = "";
 
 }
 
+/* =======================
+LESSONS RENDER
+======================= */
+
 function renderLessons(){
 
-const container =
-document.getElementById("lessonContainer");
+const container = document.getElementById("lessonContainer");
 
-const search =
-document.getElementById("searchInput")
-.value
-.toLowerCase();
+const search = document.getElementById("searchInput").value.toLowerCase();
 
 const completed = getCompleted();
 
@@ -129,64 +116,51 @@ container.innerHTML = "";
 
 lessons
 .filter(item =>
-
-(currentCategory === "All" ||
-item.category === currentCategory)
-
-&&
-
-item.title
-.toLowerCase()
-.includes(search)
-
+(currentCategory === "All" || item.category === currentCategory)
+&& item.title.toLowerCase().includes(search)
 )
 
 .forEach(item => {
 
-const isDone =
-completed.includes(item.video);
+const isDone = completed.includes(item.video);
 
 container.innerHTML += `
-
 <div class="card ${isDone ? "doneCard" : ""}">
 
 <img
 class="thumbnail"
 src="${getThumbnail(item.video)}"
-alt="${item.title}"
 onclick="openVideo('${item.video}')"
->
+/>
 
 <h3>${item.title}</h3>
-
 <p>${item.category}</p>
 
 <button onclick="openVideo('${item.video}')">
 ▶ Watch Lesson
 </button>
 
-<a href="${item.pdf}" target="_blank">
-📄 Download PDF
-</a>
+<a href="${item.pdf}" target="_blank">📄 Download PDF</a>
 
 </div>
-
 `;
 
 });
 
+updateProgress();
+
 }
+
+/* =======================
+FILTER + INIT
+======================= */
 
 function filterLessons(cat){
-
 currentCategory = cat;
-
 renderLessons();
-
 }
 
-document
-.getElementById("searchInput")
+document.getElementById("searchInput")
 .addEventListener("input", renderLessons);
 
 renderLessons();
