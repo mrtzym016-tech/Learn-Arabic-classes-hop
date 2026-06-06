@@ -2,7 +2,22 @@ let currentCategory = "All";
 let currentVideo = null;
 
 /* =========================
-DATA SYSTEM (LOCAL STORAGE)
+ADMIN SYSTEM
+========================= */
+
+const urlParams = new URLSearchParams(window.location.search);
+const isAdmin = urlParams.get("admin") === "1234";
+
+window.onload = function(){
+if(isAdmin){
+document.getElementById("adminPanel").style.display = "block";
+}
+renderLessons();
+updateProgress();
+};
+
+/* =========================
+DATA SYSTEM
 ========================= */
 
 function getLessons(){
@@ -66,6 +81,7 @@ saveLessons(data);
 
 closeAddModal();
 renderLessons();
+updateProgress();
 }
 
 /* =========================
@@ -182,8 +198,6 @@ onclick="openVideo('${item.video}')">
 
 });
 
-updateProgress();
-
 }
 
 /* =========================
@@ -201,5 +215,3 @@ INIT
 
 document.getElementById("searchInput")
 .addEventListener("input", renderLessons);
-
-renderLessons();
