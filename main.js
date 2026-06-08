@@ -1,8 +1,9 @@
 let currentCategory = "All";
 let currentVideo = null;
+let editIndex = null;
 
 /* =========================
-ADMIN SYSTEM
+ADMIN CHECK
 ========================= */
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -10,18 +11,17 @@ const isAdmin = urlParams.get("admin") === "1234";
 
 window.onload = function () {
   if (isAdmin) {
-    const adminPanel = document.getElementById("adminPanel");
-    if (adminPanel) {
-      adminPanel.style.display = "block";
-    }
+    const panel = document.getElementById("adminPanel");
+    if (panel) panel.style.display = "block";
   }
 
   renderLessons();
   updateProgress();
+  updateStats();
 };
 
 /* =========================
-DATA SYSTEM
+DATA
 ========================= */
 
 function getLessons() {
@@ -30,6 +30,44 @@ function getLessons() {
 
 function saveLessons(data) {
   localStorage.setItem("lessons", JSON.stringify(data));
+}
+
+/* =========================
+COMPLETED
+========================= */
+
+function getCompleted() {
+  return JSON.parse(localStorage.getItem("completed") || "[]");
+}
+
+function saveCompleted(data) {
+  localStorage.setItem("completed", JSON.stringify(data));
+}
+
+/* =========================
+FAVORITES
+========================= */
+
+function getFavorites() {
+  return JSON.parse(localStorage.getItem("favorites") || "[]");
+}
+
+function saveFavorites(data) {
+  localStorage.setItem("favorites", JSON.stringify(data));
+}
+
+function toggleFavorite(video) {
+  let fav = getFavorites();
+
+  if (fav.includes(video)) {
+    fav = fav.filter(v => v !== video);
+  } else {
+    fav.push(video);
+  }
+
+  saveFavorites(fav);
+  renderLessons();
+  updateStats();
 }
 
 /* =========================
@@ -56,11 +94,7 @@ function getYoutubeId(url) {
 
 function getThumbnail(url) {
   const id = getYoutubeId(url);
-
-  if (id) {
-    return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
-  }
-
+  if (id) return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
   return "https://via.placeholder.com/300x180?text=Video";
 }
 
@@ -78,6 +112,7 @@ function closeAddModal() {
 
 function addLesson() {
   const title = document.getElementById("titleInput").value.trim();
+  const category = document.getElementById("categoryInput").value;
   const video = document.getElementById("videoInput").value.trim();
   const pdf = document.getElementById("pdfInput").value.trim();
   const thumb = document.getElementById("thumbInput").value.trim();
@@ -91,10 +126,7 @@ function addLesson() {
 
   data.push({
     title,
-    category:
-      currentCategory === "All"
-        ? "Custom"
-        : currentCategory,
+    category,
     video,
     pdf: pdf || "#",
     thumb: thumb || null
@@ -102,27 +134,68 @@ function addLesson() {
 
   saveLessons(data);
 
-  document.getElementById("titleInput").value = "";
-  document.getElementById("videoInput").value = "";
-  document.getElementById("pdfInput").value = "";
-  document.getElementById("thumbInput").value = "";
-
   closeAddModal();
   renderLessons();
   updateProgress();
+  updateStats();
+}
+
+/* =========================
+DELETE
+========================= */
+
+function deleteLesson(index) {
+  let data = getLessons();
+  data.splice(index, 1);
+  saveLessons(data);
+  renderLessons();
+  updateProgress();
+  updateStats();
+}
+
+/* =========================
+EDIT
+========================= */
+
+function openEditModal(index) {
+  const lesson = getLessons()[index];
+  editIndex = index;
+
+  document.getElementById("editTitle").value = lesson.title;
+  document.getElementById("editCategory").value = lesson.category;
+  document.getElementById("editVideo").value = lesson.video;
+  document.getElementById("editPdf").value = lesson.pdf;
+  document.getElementById("editThumb").value = lesson.thumb || "";
+
+  document.getElementById("editModal").style.display = "flex";
+}
+
+function closeEditModal() {
+  document.getElementById("editModal").style.display = "none";
+}
+
+function saveEditLesson() {
+  let data = getLessons();
+
+  data[editIndex] = {
+    title: document.getElementById("editTitle").value,
+    category: document.getElementById("editCategory").value,
+    video: document.getElementById("editVideo").value,
+    pdf: document.getElementById("editPdf").value,
+    thumb: document.getElementById("editThumb").value || null
+  };
+
+  saveLessons(data);
+
+  closeEditModal();
+  renderLessons();
+  updateProgress();
+  updateStats();
 }
 
 /* =========================
 PROGRESS
 ========================= */
-
-function getCompleted() {
-  return JSON.parse(localStorage.getItem("completed") || "[]");
-}
-
-function saveCompleted(data) {
-  localStorage.setItem("completed", JSON.stringify(data));
-}
 
 function updateProgress() {
   const completed = getCompleted();
@@ -133,14 +206,6 @@ function updateProgress() {
 
   document.getElementById("progressFill").style.width =
     ((completed.length / Math.max(data.length, 1)) * 100) + "%";
-
-  const msg = document.getElementById("completeMessage");
-
-  if (completed.length === data.length && data.length > 0) {
-    msg.innerText = "🎉 Course Completed!";
-  } else {
-    msg.innerText = "";
-  }
 }
 
 function resetProgress() {
@@ -150,23 +215,18 @@ function resetProgress() {
 }
 
 /* =========================
-VIDEO SYSTEM
+VIDEO
 ========================= */
 
 function openVideo(url) {
-
   currentVideo = url;
 
   const id = getYoutubeId(url);
-
   let playUrl = url;
 
-  if (id) {
-    playUrl = `https://www.youtube.com/embed/${id}`;
-  }
+  if (id) playUrl = `https://www.youtube.com/embed/${id}`;
 
   document.getElementById("videoFrame").src = playUrl;
-
   document.getElementById("videoModal").style.display = "flex";
 
   updateCompleteBtn();
@@ -178,7 +238,6 @@ function closeVideo() {
 }
 
 function toggleComplete() {
-
   let completed = getCompleted();
 
   if (completed.includes(currentVideo)) {
@@ -188,16 +247,14 @@ function toggleComplete() {
   }
 
   saveCompleted(completed);
-
   renderLessons();
-  updateCompleteBtn();
   updateProgress();
+  updateStats();
 }
 
 function updateCompleteBtn() {
-
-  const completed = getCompleted();
   const btn = document.getElementById("completeBtn");
+  const completed = getCompleted();
 
   if (!btn) return;
 
@@ -207,63 +264,75 @@ function updateCompleteBtn() {
 }
 
 /* =========================
+STATS
+========================= */
+
+function updateStats() {
+  const data = getLessons();
+  const completed = getCompleted();
+  const fav = getFavorites();
+
+  const total = document.getElementById("totalLessons");
+  const comp = document.getElementById("completedLessons");
+  const favEl = document.getElementById("favoriteLessons");
+
+  if (total) total.innerText = data.length;
+  if (comp) comp.innerText = completed.length;
+  if (favEl) favEl.innerText = fav.length;
+}
+
+/* =========================
 RENDER
 ========================= */
 
 function renderLessons() {
-
-  const container =
-    document.getElementById("lessonContainer");
-
-  const search =
-    document.getElementById("searchInput")
-      .value
-      .toLowerCase();
+  const container = document.getElementById("lessonContainer");
+  const search = document.getElementById("searchInput").value.toLowerCase();
 
   const data = getLessons();
   const completed = getCompleted();
+  const fav = getFavorites();
 
   container.innerHTML = "";
 
   data
     .filter(item =>
-      (currentCategory === "All" ||
-        item.category === currentCategory)
-      &&
-      item.title
-        .toLowerCase()
-        .includes(search)
+      (currentCategory === "All" || item.category === currentCategory) &&
+      item.title.toLowerCase().includes(search)
     )
-    .forEach(item => {
+    .forEach((item, index) => {
 
-      const isDone =
-        completed.includes(item.video);
+      const isDone = completed.includes(item.video);
+      const isFav = fav.includes(item.video);
 
       container.innerHTML += `
-
 <div class="card ${isDone ? "doneCard" : ""}">
 
-<img
-class="thumbnail"
+<img class="thumbnail"
 src="${item.thumb || getThumbnail(item.video)}"
-alt="${item.title}"
-onclick="openVideo('${item.video}')"
->
+onclick="openVideo('${item.video}')">
 
 <h3>${item.title}</h3>
-
 <p>${item.category}</p>
 
-<button onclick="openVideo('${item.video}')">
-▶ Watch
+<button onclick="openVideo('${item.video}')">▶ Watch</button>
+
+<a href="${item.pdf}" target="_blank">📄 PDF</a>
+
+<button onclick="toggleFavorite('${item.video}')">
+${isFav ? "❤️ Remove Fav" : "🤍 Favorite"}
 </button>
 
-<a href="${item.pdf}" target="_blank">
-📄 PDF
-</a>
+${
+  isAdmin
+    ? `
+<button onclick="openEditModal(${index})">✏ Edit</button>
+<button onclick="deleteLesson(${index})">🗑 Delete</button>
+`
+    : ""
+}
 
 </div>
-
 `;
     });
 }
@@ -278,9 +347,8 @@ function filterLessons(cat) {
 }
 
 /* =========================
-INIT
+SEARCH
 ========================= */
 
-document
-  .getElementById("searchInput")
+document.getElementById("searchInput")
   .addEventListener("input", renderLessons);
