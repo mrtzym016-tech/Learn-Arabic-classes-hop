@@ -5,6 +5,7 @@ background:#0b0b0f;
 color:white;
 }
 
+/* HEADER */
 header{
 text-align:center;
 padding:30px;
@@ -51,6 +52,37 @@ color:#00ff88;
 font-weight:bold;
 }
 
+/* STATS */
+.statsBox{
+display:flex;
+justify-content:center;
+gap:15px;
+padding:15px;
+flex-wrap:wrap;
+background:#101018;
+}
+
+.statCard{
+background:#1a1a22;
+padding:15px;
+border-radius:10px;
+min-width:120px;
+text-align:center;
+border:1px solid #222;
+}
+
+.statCard h3{
+margin:0;
+font-size:22px;
+color:#00ff88;
+}
+
+.statCard p{
+margin:5px 0 0;
+font-size:12px;
+color:#aaa;
+}
+
 /* SEARCH */
 .search-box{
 text-align:center;
@@ -81,7 +113,11 @@ border-radius:6px;
 cursor:pointer;
 }
 
-/* LESSONS */
+.categories button:hover{
+background:#333;
+}
+
+/* LESSONS GRID */
 #lessonContainer{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
@@ -89,27 +125,45 @@ gap:15px;
 padding:20px;
 }
 
+/* CARD */
 .card{
 background:#1a1a22;
 padding:15px;
 border-radius:12px;
 transition:0.3s;
 overflow:hidden;
+border:1px solid #222;
 }
 
 .card:hover{
 transform:scale(1.03);
+border-color:#00ff88;
 }
 
+.card h3{
+margin:10px 0 5px;
+}
+
+.card p{
+color:#aaa;
+font-size:13px;
+margin:0 0 10px;
+}
+
+/* BUTTONS */
 .card button{
 background:#e50914;
 color:white;
 border:none;
 padding:8px;
 width:100%;
-margin-top:10px;
+margin-top:8px;
 border-radius:6px;
 cursor:pointer;
+}
+
+.card button:hover{
+opacity:0.9;
 }
 
 .card a{
@@ -134,9 +188,15 @@ transition:0.3s;
 transform:scale(1.03);
 }
 
-/* DONE */
+/* DONE CARD */
 .doneCard{
 border:2px solid #00ff88;
+}
+
+/* FAVORITE BUTTON STYLE (optional highlight) */
+.card button.favorite{
+background:#ffcc00;
+color:#000;
 }
 
 /* MODAL */
@@ -148,6 +208,7 @@ width:100%;height:100%;
 background:rgba(0,0,0,0.9);
 justify-content:center;
 align-items:center;
+z-index:999;
 }
 
 .modal-content{
@@ -158,6 +219,7 @@ padding:15px;
 border-radius:10px;
 }
 
+/* VIDEO */
 iframe{
 width:100%;
 height:400px;
@@ -170,6 +232,7 @@ cursor:pointer;
 font-size:25px;
 }
 
+/* COMPLETE BUTTON */
 #completeBtn{
 margin-top:10px;
 width:100%;
@@ -179,11 +242,14 @@ border:none;
 color:black;
 font-weight:bold;
 border-radius:6px;
+cursor:pointer;
 }
 
 #completeBtn.done{
 background:#00ff88;
 }
+
+/* ADS */
 .adBox{
 margin:15px auto;
 text-align:center;
@@ -193,6 +259,7 @@ text-align:center;
 transform:scale(0.95);
 }
 
+/* FLOATING AD */
 .floatingAd{
 position:fixed;
 right:10px;
@@ -205,10 +272,23 @@ z-index:999;
 display:none;
 }
 }
-#addModal input{
+
+/* ADD INPUTS */
+#addModal input,
+#addModal select,
+#editModal input,
+#editModal select{
 width:100%;
 margin:8px 0;
 padding:10px;
 border-radius:6px;
 border:none;
+background:#222;
+color:white;
+}
+
+/* INPUT FOCUS */
+#addModal input:focus,
+#editModal input:focus{
+outline:2px solid #00ff88;
 }
